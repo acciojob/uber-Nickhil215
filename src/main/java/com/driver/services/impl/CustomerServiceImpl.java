@@ -69,9 +69,11 @@ public class CustomerServiceImpl implements CustomerService {
 			   tripBooking.setCustomer(customer);
 
 			   return tripBooking;
-		   }
+		   }else{
+			return tripBooking;
+		}
 
-		  return tripBooking;
+
 
 
 	}
