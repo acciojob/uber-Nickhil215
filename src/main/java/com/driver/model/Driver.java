@@ -9,7 +9,7 @@ import java.util.List;
 public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int DriverId;
 
     private String mobile;
 
@@ -52,12 +52,12 @@ public class Driver {
         this.cab = cab;
     }
 
-    public int getId() {
-        return id;
+    public int getDriverId() {
+        return DriverId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setDriverId(int driverId) {
+        DriverId = driverId;
     }
 
     public Driver(String mobile, String password) {

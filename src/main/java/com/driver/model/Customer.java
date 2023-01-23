@@ -7,7 +7,7 @@ import java.util.List;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int CustomerId;
     @Column(nullable = false,unique = true)
     private String mobile;
     @Column(nullable = false)
@@ -46,5 +46,13 @@ public class Customer {
     }
 
     public Customer() {
+    }
+
+    public int getCustomerId() {
+        return CustomerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        CustomerId = customerId;
     }
 }

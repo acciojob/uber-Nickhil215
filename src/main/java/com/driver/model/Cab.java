@@ -1,14 +1,12 @@
 package com.driver.model;
 
-import com.driver.model.Driver;
-
 import javax.persistence.*;
 
 @Entity
 public class Cab {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int CabID;
+    private int Id;
 
     private int perKmRate;
     @Column(columnDefinition = "TINYINT(1)")
@@ -18,12 +16,12 @@ public class Cab {
     @JoinColumn
     private Driver driver;
 
-    public int getCabID() {
-        return CabID;
+    public int getId() {
+        return Id;
     }
 
-    public void setCabID(int cabID) {
-        CabID = cabID;
+    public void setId(int id) {
+        Id = id;
     }
 
     public int getPerKmRate() {
@@ -34,7 +32,7 @@ public class Cab {
         this.perKmRate = perKmRate;
     }
 
-    public boolean isAvailable( boolean available) {
+    public boolean getAvailable() {
         return available;
     }
 
