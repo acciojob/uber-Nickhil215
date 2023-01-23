@@ -5,7 +5,6 @@ import com.driver.model.Driver;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Cabs")
 public class Cab {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
