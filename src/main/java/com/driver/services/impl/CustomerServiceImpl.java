@@ -3,6 +3,7 @@ package com.driver.services.impl;
 import com.driver.model.TripBooking;
 import com.driver.repository.CabRepository;
 import com.driver.services.CustomerService;
+import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
 		//Avoid using SQL query
 		List<Driver> drivers=driverRepository2.findAll();
 		if(drivers==null || drivers.isEmpty()){
-			throw new Exception("No cab available!");
+			throw new Exception("No Driver available!");
 		}
 		int lowID=Integer.MAX_VALUE;
 		for(Driver driver:drivers){
@@ -62,7 +63,8 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 		Customer customer=customerRepository2.findById(customerId).get();
 
-		   Driver driver=driverRepository2.findById(lowID).get();
+		   Driver driver=driverRepository2.findById(lowID).orElseThrow(()->new Exception("No Driver available with the given id"));
+
 		   TripBooking tripBooking=new TripBooking(toLocation,fromLocation,distanceInKm,TripStatus.CONFIRMED);
 		   driver.getCab().setAvailable(false);
 		   tripBooking.setBill(driver.getCab().getPerKmRate()*distanceInKm);
