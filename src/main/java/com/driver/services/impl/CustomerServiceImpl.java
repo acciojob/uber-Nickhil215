@@ -49,7 +49,7 @@ public class CustomerServiceImpl implements CustomerService {
 		//Avoid using SQL query
 		List<Driver> drivers=driverRepository2.findAll();
 		if(drivers==null || drivers.isEmpty()){
-			throw new Exception("No dirvers Available");
+			throw new Exception("No cab available!");
 		}
 		int lowID=Integer.MAX_VALUE;
 		for(Driver driver:drivers){
