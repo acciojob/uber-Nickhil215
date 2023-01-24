@@ -45,37 +45,6 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-//	public TripBooking bookTrip(int customerId, String fromLocation, String toLocation, int distanceInKm) throws Exception{
-//		//Book the driver with lowest driverId who is free (cab available variable is Boolean.TRUE). If no driver is available, throw "No cab available!" exception
-//		//Avoid using SQL query
-//		List<Driver> drivers=driverRepository2.findAll();
-//		if(drivers==null || drivers.isEmpty()){
-//			throw new Exception("No Driver available!");
-//		}
-//		int lowID=Integer.MAX_VALUE;
-//		for(Driver driver:drivers){
-//			if(driver.getDriverId()<lowID && driver.getCab().getAvailable()){
-//				lowID= driver.getDriverId();
-//			}
-//		}
-//   		if(lowID==Integer.MAX_VALUE){
-//			   throw new Exception("No cab available!");
-//		}
-//		Customer customer=customerRepository2.findById(customerId).get();
-//
-//		   Driver driver=driverRepository2.findById(lowID).orElseThrow(()->new Exception("No Driver available with the given id"));
-//
-//		   TripBooking tripBooking=new TripBooking(toLocation,fromLocation,distanceInKm,TripStatus.CONFIRMED);
-//		   driver.getCab().setAvailable(false);
-//		   tripBooking.setBill(driver.getCab().getPerKmRate()*distanceInKm);
-//
-//		   tripBooking.setDriver(driver);
-//		   tripBooking.setCustomer(customer);
-//
-//		   return tripBooking;
-//
-//
-//	}
 	public TripBooking bookTrip(int customerId, String fromLocation, String toLocation, int distanceInKm) throws Exception{
 		//Book the driver with lowest driverId who is free (cab available variable is Boolean.TRUE). If no driver is available, throw "No cab available!" exception
 		//Avoid using SQL query
@@ -89,27 +58,23 @@ public class CustomerServiceImpl implements CustomerService {
 				lowID= driver.getDriverId();
 			}
 		}
-		if(lowID==Integer.MAX_VALUE){
-			throw new Exception("No cab available!");
+   		if(lowID==Integer.MAX_VALUE){
+			   throw new Exception("No cab available!");
 		}
-		Customer customer = customerRepository2.findById(customerId)
-				.orElseThrow(() -> new Exception("No cab available!"));
-		Driver driver = driverRepository2.findById(lowID)
-				.orElseThrow(() -> new Exception("No cab available!"));
-		if (driver == null || customer == null){
-			throw new Exception("Error driver or customer not found");
-		}
-		if (driver.getCab().getPerKmRate() <= 0){
-			throw new Exception("Invalid perKmRate");
-		}
-		TripBooking tripBooking=new TripBooking(toLocation,fromLocation,distanceInKm,TripStatus.CONFIRMED);
-		driver.getCab().setAvailable(false);
-		tripBooking.setBill(driver.getCab().getPerKmRate()*distanceInKm);
+		Customer customer=customerRepository2.findById(customerId).get();
 
-		tripBooking.setDriver(driver);
-		tripBooking.setCustomer(customer);
+		   Driver driver=driverRepository2.findById(lowID).orElseThrow(()->new Exception("No Driver available with the given id"));
 
-		return tripBooking;
+		   TripBooking tripBooking=new TripBooking(toLocation,fromLocation,distanceInKm,TripStatus.CONFIRMED);
+		   driver.getCab().setAvailable(false);
+		   tripBooking.setBill(driver.getCab().getPerKmRate()*distanceInKm);
+
+		   tripBooking.setDriver(driver);
+		   tripBooking.setCustomer(customer);
+
+		   return tripBooking;
+
+
 	}
 
 
