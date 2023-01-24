@@ -49,32 +49,38 @@ public class CustomerServiceImpl implements CustomerService {
 		//Book the driver with lowest driverId who is free (cab available variable is Boolean.TRUE). If no driver is available, throw "No cab available!" exception
 		//Avoid using SQL query
 		List<Driver> drivers=driverRepository2.findAll();
-		if(drivers==null || drivers.isEmpty()){
-			throw new Exception("No cab available!");
-		}
-		int lowID=Integer.MAX_VALUE;
-		for(Driver driver:drivers){
-			if(driver.getDriverId()<lowID && driver.getCab().getAvailable()){
-				lowID= driver.getDriverId();
+		if(drivers!=null && !drivers.isEmpty()){
+			int lowID=Integer.MAX_VALUE;
+			for(Driver driver:drivers){
+				if(driver.getDriverId()<lowID && driver.getCab().getAvailable()){
+					lowID= driver.getDriverId();
+				}
+			}
+
+			if(lowID==Integer.MAX_VALUE){
+				throw new Exception("No cab available!");
+			}else{
+				Customer customer=customerRepository2.findById(customerId).get();
+
+				Driver driver = driverRepository2.findById(lowID).orElseThrow(() -> {
+					return new Exception("No Driver available with the given id");
+				});
+
+				TripBooking tripBooking=new TripBooking(toLocation,fromLocation,distanceInKm,TripStatus.CONFIRMED);
+				driver.getCab().setAvailable(false);
+				tripBooking.setBill(driver.getCab().getPerKmRate()*distanceInKm);
+
+				tripBooking.setDriver(driver);
+				tripBooking.setCustomer(customer);
+
+				return tripBooking;
+
 			}
 		}
-   		if(lowID==Integer.MAX_VALUE){
-			   throw new Exception("No cab available!");
+		else {
+			throw  new Exception("No cab available!");
 		}
-		Customer customer=customerRepository2.findById(customerId).get();
 
-		Driver driver = (Driver)this.driverRepository2.findById(lowID).orElseThrow(() -> {
-			return new Exception("No Driver available with the given id");
-		});
-
-		   TripBooking tripBooking=new TripBooking(toLocation,fromLocation,distanceInKm,TripStatus.CONFIRMED);
-		   driver.getCab().setAvailable(false);
-		   tripBooking.setBill(driver.getCab().getPerKmRate()*distanceInKm);
-
-		   tripBooking.setDriver(driver);
-		   tripBooking.setCustomer(customer);
-
-		   return tripBooking;
 
 
 	}
