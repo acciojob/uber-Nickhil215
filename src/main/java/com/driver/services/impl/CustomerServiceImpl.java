@@ -93,9 +93,9 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new Exception("No cab available!");
 		}
 		Customer customer = customerRepository2.findById(customerId)
-				.orElseThrow(() -> new Exception("No customer available with the given id"));
+				.orElseThrow(() -> new Exception("No cab available!"));
 		Driver driver = driverRepository2.findById(lowID)
-				.orElseThrow(() -> new Exception("No driver available with the given id"));
+				.orElseThrow(() -> new Exception("No cab available!"));
 		if (driver == null || customer == null){
 			throw new Exception("Error driver or customer not found");
 		}
