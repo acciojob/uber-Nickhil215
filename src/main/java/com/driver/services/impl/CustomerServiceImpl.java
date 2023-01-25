@@ -48,39 +48,70 @@ public class CustomerServiceImpl implements CustomerService {
 	public TripBooking bookTrip(int customerId, String fromLocation, String toLocation, int distanceInKm) throws Exception{
 		//Book the driver with lowest driverId who is free (cab available variable is Boolean.TRUE). If no driver is available, throw "No cab available!" exception
 		//Avoid using SQL query
-		List<Driver> drivers=driverRepository2.findAll();
-		if(drivers!=null && !drivers.isEmpty()){
-			int lowID=Integer.MAX_VALUE;
-			for(Driver driver:drivers){
-				if(driver.getDriverId()<lowID && driver.getCab().getAvailable()){
-					lowID= driver.getDriverId();
+//		List<Driver> drivers=driverRepository2.findAll();
+//		if(drivers!=null && !drivers.isEmpty()){
+//			int lowID=Integer.MAX_VALUE;
+//			for(Driver driver:drivers){
+//				if(driver.getDriverId()<lowID && driver.getCab().getAvailable()){
+//					lowID= driver.getDriverId();
+//				}
+//			}
+//
+//			if(lowID==Integer.MAX_VALUE){
+//				throw new Exception("No cab available!");
+//			}else{
+//				Customer customer=customerRepository2.findById(customerId).get();
+//
+//			    Driver driver =driverRepository2.findById(lowID).get();
+//
+//				TripBooking tripBooking=new TripBooking(toLocation,fromLocation,distanceInKm,TripStatus.CONFIRMED);
+//				driver.getCab().setAvailable(false);
+//				tripBooking.setBill(driver.getCab().getPerKmRate()*distanceInKm);
+//
+//				tripBooking.setDriver(driver);
+//				tripBooking.setCustomer(customer);
+//
+//				return tripBooking;
+//
+//			}
+//		}
+//		else {
+//			throw  new Exception("No cab available!");
+//		}
+		TripBooking tripBooking = new TripBooking();
+		Driver driver = null;
+		List<Driver> allDrivers = driverRepository2.findAll();
+//		if(allDrivers == null){
+//			throw new Exception("No cab available!");
+//		}
+
+		for(Driver driver1: allDrivers){
+			if(driver1.getCab().getAvailable() == Boolean.TRUE) {
+				if((driver == null) || (driver.getDriverId() > driver1.getDriverId())){
+					driver = driver1;
 				}
 			}
-
-			if(lowID==Integer.MAX_VALUE){
-				throw new Exception("No cab available!");
-			}else{
-				Customer customer=customerRepository2.findById(customerId).get();
-
-				Driver driver = driverRepository2.findById(lowID).orElseThrow(() -> {
-					return new Exception("No Driver available with the given id");
-				});
-
-				TripBooking tripBooking=new TripBooking(toLocation,fromLocation,distanceInKm,TripStatus.CONFIRMED);
-				driver.getCab().setAvailable(false);
-				tripBooking.setBill(driver.getCab().getPerKmRate()*distanceInKm);
-
-				tripBooking.setDriver(driver);
-				tripBooking.setCustomer(customer);
-
-				return tripBooking;
-
-			}
 		}
-		else {
-			throw  new Exception("No cab available!");
+		if(driver == null){
+			throw new Exception("No cab available!");
 		}
+		Customer customer = customerRepository2.findById(customerId).get();
+		tripBooking.setCustomer(customer);
+		tripBooking.setDriver(driver);
+		driver.getCab().setAvailable(Boolean.FALSE);
+		tripBooking.setFromLocation(fromLocation);
+		tripBooking.setToLocation(toLocation);
+		tripBooking.setDistanceInKm(distanceInKm);
+		tripBooking.setStatus(TripStatus.CONFIRMED);
 
+		customer.getTripBookingList().add(tripBooking);
+		customerRepository2.save(customer); //saving the parent.
+
+		driver.getTripBookingList().add(tripBooking);
+		driverRepository2.save(driver);
+
+		//tripBookingRepository.save(tripBooking); ab iski zrorat nhi hai as this is the child.
+		return tripBooking;
 
 
 	}
