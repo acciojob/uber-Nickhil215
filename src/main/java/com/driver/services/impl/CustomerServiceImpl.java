@@ -60,18 +60,18 @@ public class CustomerServiceImpl implements CustomerService {
 
 
 		if(lowId<Integer.MAX_VALUE&&driver!=null){
-			Customer customer=customerRepository2.findById(customerId).get();
-
 			TripBooking tripBooking=new TripBooking(toLocation,fromLocation,distanceInKm,TripStatus.CONFIRMED);
+
+			Customer customer=customerRepository2.findById(customerId).get();
 
 			customer.getTripBookingList().add(tripBooking);
 			driver.getTripBookingList().add(tripBooking);
+			driver.getCab().setAvailable(false);
 
 			tripBooking.setCustomer(customer);
 			tripBooking.setDriver(driver);
 
 			tripBooking.setBill(distanceInKm*driver.getCab().getPerKmRate());
-			driver.getCab().setAvailable(false);
 
 			driverRepository2.save(driver);
 			customerRepository2.save(customer);
