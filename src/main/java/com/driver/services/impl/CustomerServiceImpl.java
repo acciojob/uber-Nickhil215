@@ -48,37 +48,49 @@ public class CustomerServiceImpl implements CustomerService {
 	public TripBooking bookTrip(int customerId, String fromLocation, String toLocation, int distanceInKm) throws Exception{
 //		Book the driver with lowest driverId who is free (cab available variable is Boolean.TRUE). If no driver is available, throw "No cab available!" exception
 //		Avoid using SQL query
+//		List<Driver> driverList=driverRepository2.findAll();
+//		Driver driver=null;
+//		int lowId=Integer.MAX_VALUE;
+//		for(Driver driver1:driverList){
+//			if(driver1.getDriverId()<lowId && driver.getCab().getAvailable()){
+//				lowId=driver1.getDriverId();
+//				driver=driver1;
+//			}
+//		}
+
 		List<Driver> driverList=driverRepository2.findAll();
-		Driver driver=null;
+		Driver driver1=null;
+
+//		if(driverList.size()==0){
+//			throw new Exception("No cab available!");
+//		}
+
 		int lowId=Integer.MAX_VALUE;
-		for(Driver driver1:driverList){
-			if(driver1.getDriverId()<lowId && driver.getCab().getAvailable()){
-				lowId=driver1.getDriverId();
-				driver=driver1;
+		for(Driver driver:driverList){
+			if(driver.getDriverId()<lowId && driver.getCab().getAvailable()){
+				lowId=driver.getDriverId();
+				driver1=driver;
 			}
 		}
 
-		if(lowId<Integer.MAX_VALUE && driver!=null) {
 
-			TripBooking tripBooking = new TripBooking(fromLocation, toLocation, distanceInKm, TripStatus.CONFIRMED);
+		if(lowId<Integer.MAX_VALUE&&driver1!=null){
+			TripBooking tripBooking=new TripBooking(toLocation,fromLocation,distanceInKm,TripStatus.CONFIRMED);
 
+			Customer customer=customerRepository2.findById(customerId).get();
 
-			//Driver driver=driverRepository2.findById(driverId).get();
-			driver.getCab().setAvailable(false);
-			tripBooking.setBill(driver.getCab().getPerKmRate() * distanceInKm);
-			Customer customer = customerRepository2.findById(customerId).get();
+			driver1.getCab().setAvailable(false);
 
-			tripBooking.setDriver(driver);
 			tripBooking.setCustomer(customer);
+			tripBooking.setDriver(driver1);
 
-			driver.getTripBookingList().add(tripBooking);
 			customer.getTripBookingList().add(tripBooking);
+			driver1.getTripBookingList().add(tripBooking);
 
-			driverRepository2.save(driver);
+			tripBooking.setBill(distanceInKm*driver1.getCab().getPerKmRate());
+
+			driverRepository2.save(driver1);
 			customerRepository2.save(customer);
-
-			//	tripBookingRepository2.save(tripBooking);
-
 
 			return tripBooking;
 		}
