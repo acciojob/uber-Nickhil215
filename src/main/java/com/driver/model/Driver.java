@@ -3,6 +3,7 @@ package com.driver.model;
 import com.driver.model.TripBooking;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,7 +17,7 @@ public class Driver {
     private String Password;
 
     @OneToMany(mappedBy = "driver",cascade = CascadeType.ALL)
-    private List<TripBooking>tripBookingList;
+    private List<TripBooking>tripBookingList=new ArrayList<>();
     @OneToOne(mappedBy = "driver",cascade = CascadeType.ALL)
     private Cab cab;
 
