@@ -58,24 +58,27 @@ public class CustomerServiceImpl implements CustomerService {
 			}
 		}
 
+		if(lowId<Integer.MAX_VALUE && driver!=null) {
 
-		if(lowId<Integer.MAX_VALUE&&driver!=null){
-			TripBooking tripBooking=new TripBooking(toLocation,fromLocation,distanceInKm,TripStatus.CONFIRMED);
+			TripBooking tripBooking = new TripBooking(fromLocation, toLocation, distanceInKm, TripStatus.CONFIRMED);
 
-			Customer customer=customerRepository2.findById(customerId).get();
 
+			//Driver driver=driverRepository2.findById(driverId).get();
 			driver.getCab().setAvailable(false);
+			tripBooking.setBill(driver.getCab().getPerKmRate() * distanceInKm);
+			Customer customer = customerRepository2.findById(customerId).get();
 
-			tripBooking.setCustomer(customer);
 			tripBooking.setDriver(driver);
+			tripBooking.setCustomer(customer);
 
-			customer.getTripBookingList().add(tripBooking);
 			driver.getTripBookingList().add(tripBooking);
-
-			tripBooking.setBill(distanceInKm*driver.getCab().getPerKmRate());
+			customer.getTripBookingList().add(tripBooking);
 
 			driverRepository2.save(driver);
 			customerRepository2.save(customer);
+
+			//	tripBookingRepository2.save(tripBooking);
+
 
 			return tripBooking;
 		}
